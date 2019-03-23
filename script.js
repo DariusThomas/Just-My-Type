@@ -6,6 +6,11 @@ $(document).ready(function () {
     $keyboardDiv.css('height', '100vh');
     $keyboardDiv.appendTo($('body'));
 
+    let $numRow = $('<div></div>');
+    $numRow.attr('id', 'numRow');
+    $numRow.appendTo($keyboardDiv)
+    $numRow.attr('class', 'd-flex flex-row justify-content-center');
+
     let $firstRow = $('<div></div>');
     $firstRow.attr('id', 'firstRow');
     $firstRow.appendTo($keyboardDiv)
@@ -40,21 +45,19 @@ $(document).ready(function () {
     $(document).ready(setKeyUnShifted)
     
     $(document).keydown(function (e) {
-console.log(e.keyCode);
         if (e.shiftKey) {
+            $numRow.empty();
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
             setKeyShifted()
         }
-        if ($('#a' + (e.keyCode + 32)).length) {
-            console.log($('#a' + (e.keyCode + 32)).text())
+        if (!e.shiftKey && $('#a' + (e.keyCode + 32)).length) {
             $('#a' + (e.keyCode + 32)).css({
                 'background-color': 'blue',
                 'color': 'white'
             })
         } else if ($('#a' + e.keyCode).length) {
-            console.log($('#a' + e.keyCode).text())
             $('#a' + e.keyCode).css({
                 'background-color': 'blue',
                 'color': 'white'
@@ -156,6 +159,162 @@ console.log(e.keyCode);
                 'color': 'white'
             })
         }
+//--------------------------------------------------------
+        if(e.keyCode == 192 && !e.shiftKey){
+            $('#a96').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 192 && e.shiftKey){
+            $('#a126').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 49 && !e.shiftKey){
+            $('#a49').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 49 && e.shiftKey){
+            $('#a33').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 50 && !e.shiftKey){
+            $('#a50').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 50 && e.shiftKey){
+            $('#a64').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 51 && !e.shiftKey){
+            $('#a51').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 51 && e.shiftKey){
+            $('#a35').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 52 && !e.shiftKey){
+            $('#a52').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 52 && e.shiftKey){
+            $('#a36').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 53 && !e.shiftKey){
+            $('#a53').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 53 && e.shiftKey){
+            $('#a37').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 54 && !e.shiftKey){
+            $('#a54').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 54 && e.shiftKey){
+            $('#a94').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 55 && !e.shiftKey){
+            $('#a55').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 55 && e.shiftKey){
+            $('#a38').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 56 && !e.shiftKey){
+            $('#a56').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 56 && e.shiftKey){
+            $('#a42').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 57 && !e.shiftKey){
+            $('#a57').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 57 && e.shiftKey){
+            $('#a40').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 48 && !e.shiftKey){
+            $('#a48').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 48 && e.shiftKey){
+            $('#a41').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 189 && !e.shiftKey){
+            $('#a45').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 189 && e.shiftKey){
+            $('#a95').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 187 && !e.shiftKey){
+            $('#a61').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 187 && e.shiftKey){
+            $('#a43').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
 
 
     });
@@ -163,31 +322,40 @@ console.log(e.keyCode);
     $(document).keyup(function (e) {
 
         if (!e.shiftKey) {
+            $numRow.empty()
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
             setKeyUnShifted()
         }
-        if ($('#a' + e.keyCode).length) {
-            $('#a' + e.keyCode).css({
-                'background-color': 'white',
-                'color': 'gray'
-            })
-        } else if ($('#a' + (e.keyCode + 32)).length) {
-            $('#a' + (e.keyCode + 32)).css({
-                'background-color': 'white',
-                'color': 'gray'
-            })
-        }
+        $('.btn').css({
+            'background-color': 'white',
+            'color': 'gray'
+        })
     });
 
 
     function setKeyUnShifted() {
+        let numRowKeys = ['`','1','2','3','4','5','6','7','8','9','0','-','=']
         let firstRowKeys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\']
         let secondRowKeys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\''];
         let thirdRowKeys = ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'];
 
+        for (let i = 0; i < numRowKeys.length; i++) {
+            let $numRowBtn = $('<button></button>');
+            $numRowBtn.attr('type', 'button');
+            $numRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+            $numRowBtn.css({
+                'height': '3em',
+                'width': '2.5em'
+            })
+            $numRowBtn.text(numRowKeys[i]);
+            $numRowBtn.attr('id', 'a' + numRowKeys[i].charCodeAt(0));
+            $numRowBtn.appendTo($numRow)
+        }
+
         for (let i = 0; i < firstRowKeys.length; i++) {
+
             let $firstRowBtn = $('<button></button>');
             $firstRowBtn.attr('type', 'button');
             $firstRowBtn.attr('class', 'btn btn-outline-secondary m-1')
@@ -227,9 +395,23 @@ console.log(e.keyCode);
         }
     };
     function setKeyShifted() {
+        let numRowKeys = ["~","!","@","#","$","%","^","&","*","(",")","_","+"]
         let firstRowKeys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|']
         let secondRowKeys = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"'];
         let thirdRowKeys = ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?'];
+
+        for (let i = 0; i < numRowKeys.length; i++) {
+            let $numRowBtn = $('<button></button>');
+            $numRowBtn.attr('type', 'button');
+            $numRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+            $numRowBtn.css({
+                'height': '3em',
+                'width': '2.5em'
+            })
+            $numRowBtn.text(numRowKeys[i]);
+            $numRowBtn.attr('id', 'a' + numRowKeys[i].charCodeAt(0));
+            $numRowBtn.appendTo($numRow)
+        }
 
         for (let i = 0; i < firstRowKeys.length; i++) {
             let $firstRowBtn = $('<button></button>');
