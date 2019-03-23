@@ -40,31 +40,129 @@ $(document).ready(function () {
     $(document).ready(setKeyUnShifted)
     
     $(document).keydown(function (e) {
-
+console.log(e.keyCode);
         if (e.shiftKey) {
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
             setKeyShifted()
         }
-        if (!e.shiftKey && $('#a' + (e.keyCode + 32)).length) {
+        if ($('#a' + (e.keyCode + 32)).length) {
             console.log($('#a' + (e.keyCode + 32)).text())
             $('#a' + (e.keyCode + 32)).css({
-                'background-color': 'gray',
+                'background-color': 'blue',
                 'color': 'white'
             })
-        } else if (e.shiftKey && $('#a' + e.keyCode).length) {
+        } else if ($('#a' + e.keyCode).length) {
             console.log($('#a' + e.keyCode).text())
             $('#a' + e.keyCode).css({
-                'background-color': 'gray',
+                'background-color': 'blue',
                 'color': 'white'
             })
         }
+
+        if(e.keyCode == 219 && !e.shiftKey){
+            $('#a91').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 219 && e.shiftKey){
+            $('#a123').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 221 && !e.shiftKey){
+            $('#a93').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 221 && e.shiftKey){
+            $('#a125').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 220 && !e.shiftKey){
+            $('#a92').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 220 && e.shiftKey){
+            $('#a124').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 186 && !e.shiftKey){
+            $('#a59').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 186 && e.shiftKey){
+            $('#a58').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 222 && !e.shiftKey){
+            $('#a39').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 222 && e.shiftKey){
+            $('#a34').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 188 && !e.shiftKey){
+            $('#a44').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 188 && e.shiftKey){
+            $('#a60').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 190 && !e.shiftKey){
+            $('#a46').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 190 && e.shiftKey){
+            $('#a62').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+        if(e.keyCode == 191 && !e.shiftKey){
+            $('#a47').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }else if(e.keyCode == 191 && e.shiftKey){
+            $('#a63').css({
+                'background-color': 'blue',
+                'color': 'white'
+            })
+        }
+
+
     });
 
     $(document).keyup(function (e) {
 
-        if (e.keyCode == 16) {
+        if (!e.shiftKey) {
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
