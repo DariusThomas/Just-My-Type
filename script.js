@@ -6,7 +6,7 @@ $(document).ready(function () {
     let letterLength = letterArr.length;
     let $senContainer = $('<h4></h4>');
     $senContainer.attr('id', 'sen-div');
-    $senContainer.attr('class', 'text-center p-2');
+    $senContainer.attr('class', 'text-center p-5 m-3');
     $senContainer.appendTo($('body'));
 
 
@@ -41,17 +41,6 @@ $(document).ready(function () {
     $fourthRow.attr('id', 'thirdRow');
     $fourthRow.appendTo($keyboardDiv)
     $fourthRow.attr('class', 'd-flex flex-row justify-content-center');
-
-    let $fourthRowBtn = $('<button></button>');
-    $fourthRowBtn.attr('type', 'button');
-    $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
-    $fourthRowBtn.css({
-        'height': '3em',
-        'width': '25em'
-    });
-    $fourthRowBtn.text(' ');
-    $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
-    $fourthRowBtn.appendTo($fourthRow);
 
     $(document).ready(setKeyUnShifted);
     $(document).ready(highlightLetter);
@@ -102,7 +91,15 @@ $(document).ready(function () {
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
-            setKeyUnShifted()
+            $fourthRow.empty();
+            setKeyUnShifted();
+        }else if(e.shiftKey){
+            $numRow.empty()
+            $firstRow.empty();
+            $secondRow.empty();
+            $thirdRow.empty();
+            $fourthRow.empty();
+            setKeyShifted();
         }
 
     };
@@ -113,6 +110,7 @@ $(document).ready(function () {
             $firstRow.empty();
             $secondRow.empty();
             $thirdRow.empty();
+            $fourthRow.empty();
             setKeyShifted()
         }
         if (!e.shiftKey && $('#a' + (e.keyCode + 32)).length) {
@@ -440,6 +438,17 @@ $(document).ready(function () {
             $thirdRowBtn.attr('id', 'a' + thirdRowKeys[i].charCodeAt(0));
             $thirdRowBtn.appendTo($thirdRow)
         }
+
+        let $fourthRowBtn = $('<button></button>');
+    $fourthRowBtn.attr('type', 'button');
+    $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+    $fourthRowBtn.css({
+        'height': '3em',
+        'width': '25em'
+    });
+    $fourthRowBtn.text(' ');
+    $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
+    $fourthRowBtn.appendTo($fourthRow);
     };
     function setKeyShifted() {
         let numRowKeys = ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+"]
@@ -498,5 +507,16 @@ $(document).ready(function () {
             $thirdRowBtn.attr('id', 'a' + thirdRowKeys[i].charCodeAt(0));
             $thirdRowBtn.appendTo($thirdRow)
         }
+
+        let $fourthRowBtn = $('<button></button>');
+    $fourthRowBtn.attr('type', 'button');
+    $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+    $fourthRowBtn.css({
+        'height': '3em',
+        'width': '25em'
+    });
+    $fourthRowBtn.text(' ');
+    $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
+    $fourthRowBtn.appendTo($fourthRow);
     };
 })
