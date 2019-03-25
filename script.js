@@ -4,12 +4,33 @@ $(document).ready(function () {
     let charCount = 0;
     let letterArr = senArr[senCount].split('');
     let letterLength = letterArr.length;
+    let startTime = 0;
+    let endTime = 0;
+    let correct = 0;
+    let numOfChars = 0;
+    let $targetDiv = $('<div></div>');
+    $targetDiv.attr('class', 'display-4 p-4');
+
+    let $newGameBtn = $('<button></button>');
+    $newGameBtn.attr('class', ' btn btn-success')
+    $newGameBtn.text('New Game?');
+
+    let $gameResults = $('<div></div');
+    $gameResults.attr('class', 'display-4');
+
     let $senContainer = $('<h4></h4>');
     $senContainer.attr('id', 'sen-div');
-    $senContainer.attr('class', 'text-center p-5 m-3');
+    $senContainer.attr('class', 'text-center pt-5 pb-2 m-3');
     $senContainer.appendTo($('body'));
 
+    let $marksDiv = $('<div></div>');
+    $marksDiv.attr('class', 'd-flex text-center justify-content-center');
+    ($('body')).append($marksDiv);
 
+    let $targetContainer = $('<div></div>');
+    $targetContainer.attr('id', 'target-letter-div');
+    $targetContainer.attr('class', 'text-center d-flex justify-content-center');
+    $targetContainer.appendTo($('body'));
 
     let $keyboardDiv = $('<div></div>')
     $keyboardDiv.attr('id', 'keyBoardDiv')
@@ -43,47 +64,58 @@ $(document).ready(function () {
     $fourthRow.attr('class', 'd-flex flex-row justify-content-center');
 
     $(document).ready(setKeyUnShifted);
-    $(document).ready(highlightLetter);
-    $(document).keydown(highlightKey);
-    $(document).keydown(highlightNextLetter);
+    $(document).ready(targetLetter);
+    $(document).keydown(keyPress);
+    $(document).keydown(targetNextLetter);
     $(document).keyup(resetKey);
 
-    function highlightNextLetter(e) {
-        if (e.keyCode != 16) {
+    function resetGame() {
+        senCount = 0;
+        charCount = 0;
+        numOfChars = 0;
+        correct = 0;
+        $senContainer.empty();
+        $gameResults.empty();
+        targetLetter();
+    }
+
+    function targetNextLetter(e) {
+        if (senCount < senArr.length && e.keyCode != 16 && e.keyCode != 20) {
             $senContainer.empty()
             charCount++
-            highlightLetter();
-            console.log(letterLength)
-            console.log(charCount)
-            console.log(senCount)
-            if (charCount == letterLength - 1) {
-                charCount = -1
+
+            if (charCount == letterLength) {
+                charCount = 0
                 senCount++
-            }else if(senCount == senArr.length){
-                let $newGameBtn = $('<button></button>');
-                $newGameBtn.attr('class',' display-2 btn btn-success')
-                $newGameBtn.text('New Game?');
-
+                $marksDiv.empty();
+            }
+            if (senCount == senArr.length) {
                 $senContainer.empty();
-                $newGameBtn.appendTo($senContainer)
+                $newGameBtn.click(resetGame)
+                $gameResults.append('<p>Game Complete</p> ');
+                $gameResults.append('<p>' + correct + ' out of ' + numOfChars + ' Correct</p>');
+                $gameResults.append('<p>' + Math.round((correct) / ((endTime - startTime) / (60 * 1000))) + ' Characters Per Minute</p>');
+                $gameResults.appendTo($senContainer);
+                $newGameBtn.appendTo($senContainer);
+            }
+            targetLetter();
+        }
+    }
 
+    function targetLetter() {
+        if (senCount < senArr.length) {
+            letterArr = senArr[senCount].split('');
+            letterLength = letterArr.length;
+            for (let i = 0; i < letterLength; i++) {
+                let $span = $('<span></span>');
+                $span.attr('id', 'span' + i);
+                $span.text(letterArr[i])
+                $span.appendTo($senContainer);
             }
         }
-    }
-
-    function highlightLetter() {
-        if(senCount != senArr.length){
-            let letterArr = senArr[senCount].split('');
-            let letterLength = letterArr.length;
-        for (let i = 0; i < letterLength; i++) {
-            let $span = $('<span></span>');
-            $span.attr('id', 'span' + i);
-            $span.text(letterArr[i])
-            $span.appendTo($senContainer);
-
-        }
-    }
         $('#span' + charCount).css('background-color', 'yellow');
+        $targetDiv.text($('#span' + charCount).text());
+        $targetDiv.appendTo($targetContainer);
     };
     function resetKey(e) {
         if (!e.shiftKey) {
@@ -93,7 +125,7 @@ $(document).ready(function () {
             $thirdRow.empty();
             $fourthRow.empty();
             setKeyUnShifted();
-        }else if(e.shiftKey){
+        } else if (e.shiftKey) {
             $numRow.empty()
             $firstRow.empty();
             $secondRow.empty();
@@ -104,7 +136,13 @@ $(document).ready(function () {
 
     };
 
-    function highlightKey(e) {
+    function keyPress(e) {
+        if (numOfChars == 0) {
+            startTime = performance.now();
+        }
+        if ((senCount == senArr.length - 1) && charCount == letterLength - 1) {
+            endTime = performance.now();
+        }
         if (e.shiftKey) {
             $numRow.empty();
             $firstRow.empty();
@@ -118,11 +156,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a' + (e.keyCode + 32)).text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if ($('#a' + e.keyCode).length) {
             $('#a' + e.keyCode).css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a' + (e.keyCode)).text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv);
+                }
+            }
+            numOfChars++
         }
 
         if (e.keyCode == 219 && !e.shiftKey) {
@@ -130,11 +186,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a91').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 219 && e.shiftKey) {
             $('#a123').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a123').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 221 && !e.shiftKey) {
@@ -142,11 +216,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a93').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 221 && e.shiftKey) {
             $('#a125').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a125').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 220 && !e.shiftKey) {
@@ -154,11 +246,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a92').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 220 && e.shiftKey) {
             $('#a124').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a124').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 186 && !e.shiftKey) {
@@ -166,11 +276,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a59').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 186 && e.shiftKey) {
             $('#a58').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a58').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 222 && !e.shiftKey) {
@@ -178,11 +306,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a39').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 222 && e.shiftKey) {
             $('#a34').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a34').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 188 && !e.shiftKey) {
@@ -190,11 +336,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a44').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 188 && e.shiftKey) {
             $('#a60').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a60').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 190 && !e.shiftKey) {
@@ -202,11 +366,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a46').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 190 && e.shiftKey) {
             $('#a62').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a62').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 191 && !e.shiftKey) {
@@ -214,11 +396,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a47').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 191 && e.shiftKey) {
             $('#a63').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a63').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 192 && !e.shiftKey) {
@@ -226,11 +426,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a96').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 192 && e.shiftKey) {
             $('#a126').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a126').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 49 && !e.shiftKey) {
@@ -238,11 +456,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a49').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 49 && e.shiftKey) {
             $('#a33').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a33').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 50 && !e.shiftKey) {
@@ -250,11 +486,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a50').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 50 && e.shiftKey) {
             $('#a64').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a64').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 51 && !e.shiftKey) {
@@ -262,11 +516,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a51').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 51 && e.shiftKey) {
             $('#a35').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a35').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 52 && !e.shiftKey) {
@@ -274,11 +546,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a52').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 52 && e.shiftKey) {
             $('#a36').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a36').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 53 && !e.shiftKey) {
@@ -286,11 +576,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a53').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 53 && e.shiftKey) {
             $('#a37').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a37').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 54 && !e.shiftKey) {
@@ -298,11 +606,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a54').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 54 && e.shiftKey) {
             $('#a94').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a94').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 55 && !e.shiftKey) {
@@ -310,11 +636,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a55').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 55 && e.shiftKey) {
             $('#a38').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a38').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 56 && !e.shiftKey) {
@@ -322,11 +666,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a56').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 56 && e.shiftKey) {
             $('#a42').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a42').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 57 && !e.shiftKey) {
@@ -334,11 +696,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a57').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 57 && e.shiftKey) {
             $('#a40').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a40').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 48 && !e.shiftKey) {
@@ -346,11 +726,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a48').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 48 && e.shiftKey) {
             $('#a41').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a41').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 189 && !e.shiftKey) {
@@ -358,11 +756,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a45').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 189 && e.shiftKey) {
             $('#a95').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a95').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
         if (e.keyCode == 187 && !e.shiftKey) {
@@ -370,11 +786,29 @@ $(document).ready(function () {
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a61').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         } else if (e.keyCode == 187 && e.shiftKey) {
             $('#a43').css({
                 'background-color': 'blue',
                 'color': 'white'
             })
+            if ((senCount < senArr.length) && e.keyCode != 20) {
+                if ($('#a43').text() == $('#span' + charCount).text()) {
+                    $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                    correct++
+                } else {
+                    $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+                }
+                numOfChars++
+            }
         }
 
 
@@ -440,15 +874,15 @@ $(document).ready(function () {
         }
 
         let $fourthRowBtn = $('<button></button>');
-    $fourthRowBtn.attr('type', 'button');
-    $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
-    $fourthRowBtn.css({
-        'height': '3em',
-        'width': '25em'
-    });
-    $fourthRowBtn.text(' ');
-    $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
-    $fourthRowBtn.appendTo($fourthRow);
+        $fourthRowBtn.attr('type', 'button');
+        $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+        $fourthRowBtn.css({
+            'height': '3em',
+            'width': '25em'
+        });
+        $fourthRowBtn.text(' ');
+        $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
+        $fourthRowBtn.appendTo($fourthRow);
     };
     function setKeyShifted() {
         let numRowKeys = ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+"]
@@ -509,14 +943,14 @@ $(document).ready(function () {
         }
 
         let $fourthRowBtn = $('<button></button>');
-    $fourthRowBtn.attr('type', 'button');
-    $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
-    $fourthRowBtn.css({
-        'height': '3em',
-        'width': '25em'
-    });
-    $fourthRowBtn.text(' ');
-    $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
-    $fourthRowBtn.appendTo($fourthRow);
+        $fourthRowBtn.attr('type', 'button');
+        $fourthRowBtn.attr('class', 'btn btn-outline-secondary m-1')
+        $fourthRowBtn.css({
+            'height': '3em',
+            'width': '25em'
+        });
+        $fourthRowBtn.text(' ');
+        $fourthRowBtn.attr('id', 'a' + $fourthRowBtn.text().charCodeAt(0));
+        $fourthRowBtn.appendTo($fourthRow);
     };
 })
