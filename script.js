@@ -35,7 +35,7 @@ $(document).ready(function () {
     let $keyboardDiv = $('<div></div>')
     $keyboardDiv.attr('id', 'keyBoardDiv')
     $keyboardDiv.attr('class', 'd-flex flex-column justify-content-center align-items-center');
-    $keyboardDiv.css('height', '50vh');
+    //$keyboardDiv.css('height', '50vh');
     $keyboardDiv.appendTo($('body'));
 
     let $numRow = $('<div></div>');
@@ -68,6 +68,47 @@ $(document).ready(function () {
     $(document).keydown(keyPress);
     $(document).keydown(targetNextLetter);
     $(document).keyup(resetKey);
+
+    $keyboardDiv.on("click","[type=button]", keyClick)
+
+    function keyClick() {
+         //clicking is a "new" feature for this app and was added much later. I basically just copy and pated other parts of the original code to construct this function
+        if (numOfChars == 0) {
+            startTime = performance.now();
+        }
+        if ((senCount == senArr.length - 1) && charCount == letterLength - 1) {
+            endTime = performance.now();
+        }
+        if (senCount < senArr.length) {
+            if ($(this).text() == $('#span' + charCount).text() || $(this).text().charAt(0).toUpperCase() == $('#span' + charCount).text()) {
+               
+                $('<span class="badge badge-pill badge-success"> </span>').appendTo($marksDiv)
+                correct++
+            } else {
+                $('<span class="badge badge-pill badge-danger"> </span>').appendTo($marksDiv)
+            }
+            numOfChars++
+        }
+        $senContainer.empty()
+        charCount++
+        if (charCount == letterLength) {
+            charCount = 0
+            senCount++
+            $marksDiv.empty();
+        }
+        if (senCount == senArr.length) {
+            $senContainer.empty();
+            $newGameBtn.click(resetGame)
+            $gameResults.append('<p>Game Complete</p> ');
+            $gameResults.append('<p>' + correct + ' out of ' + numOfChars + ' Correct</p>');
+            $gameResults.append('<p>' + Math.round((correct) / ((endTime - startTime) / (60 * 1000))) + ' Characters Per Minute</p>');
+            $gameResults.appendTo($senContainer);
+            $newGameBtn.appendTo($senContainer);
+        }
+        targetLetter();
+        
+
+    }
 
     function resetGame() {
         senCount = 0;
