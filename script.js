@@ -11,13 +11,7 @@ $(document).ready(function () {
     let $targetDiv = $('<div></div>');
     let $senTracker = $(`<div class="sen-tracker"><div>`)
 
-    $senTracker.css({
-        "fontSize":"40px",
-         "position":"absolute",
-          "top":"5px",
-        "left":"50%",
-        "transform":"translateX(-50%)"
-    })
+    $senTracker.attr("class","text-center display-4 pt-4")
     $senTracker.appendTo($('body'));
 
     $targetDiv.attr('class', 'display-4 p-4');
@@ -31,7 +25,7 @@ $(document).ready(function () {
 
     let $senContainer = $('<h4></h4>');
     $senContainer.attr('id', 'sen-div');
-    $senContainer.attr('class', 'text-center pt-5 pb-2 m-3');
+    $senContainer.attr('class', 'text-center pt-1 pb-2 m-3');
     $senContainer.appendTo($('body'));
 
     let $marksDiv = $('<div></div>');
