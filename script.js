@@ -9,7 +9,17 @@ $(document).ready(function () {
     let correct = 0;
     let numOfChars = 0;
     let $targetDiv = $('<div></div>');
-    let $senTracker = $(".sen-tracker")
+    let $senTracker = $(`<div class="sen-tracker"><div>`)
+
+    $senTracker.css({
+        "font-size":"40px",
+         "position":"absolute",
+          "top":"5px",
+        "left":"50%",
+        "transform":"translateX(-50%)"
+    })
+    $senTracker.appendTo($('body'));
+
     $targetDiv.attr('class', 'display-4 p-4');
 
     let $newGameBtn = $('<button></button>');
