@@ -9,8 +9,9 @@ $(document).ready(function () {
     let correct = 0;
     let numOfChars = 0;
     let $targetDiv = $('<div></div>');
-    let $senTracker = $(`<div class="sen-tracker"><div>`)
+    let $senTracker = $(`<div></div>`)
 
+    $senTracker.attr("id","sen-tracker")
     $senTracker.attr("class","text-center display-4 pt-4")
     $senTracker.appendTo($('body'));
 
