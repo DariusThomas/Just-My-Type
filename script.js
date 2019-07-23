@@ -9,6 +9,7 @@ $(document).ready(function () {
     let correct = 0;
     let numOfChars = 0;
     let $targetDiv = $('<div></div>');
+    let $senTracker = $(".sen-tracker")
     $targetDiv.attr('class', 'display-4 p-4');
 
     let $newGameBtn = $('<button></button>');
@@ -128,6 +129,7 @@ $(document).ready(function () {
             if (charCount == letterLength) {
                 charCount = 0
                 senCount++
+                
                 $marksDiv.empty();
             }
             if (senCount == senArr.length) {
@@ -157,6 +159,7 @@ $(document).ready(function () {
         $('#span' + charCount).css('background-color', 'yellow');
         $targetDiv.text($('#span' + charCount).text());
         $targetDiv.appendTo($targetContainer);
+        $senTracker.text(`${senCount}/${senArr.length}`)
     };
     function resetKey(e) {
         if (!e.shiftKey) {
