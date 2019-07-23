@@ -12,7 +12,7 @@ $(document).ready(function () {
     let $senTracker = $(`<div class="sen-tracker"><div>`)
 
     $senTracker.css({
-        "font-size":"40px",
+        "fontSize":"40px",
          "position":"absolute",
           "top":"5px",
         "left":"50%",
